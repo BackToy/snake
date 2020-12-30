@@ -13,9 +13,15 @@ import pygame
 from pygame.locals import K_SPACE, K_UP, K_w, K_DOWN, K_s,\
     K_LEFT, K_a, K_RIGHT, K_d, K_ESCAPE
 import copy
+import random
+
 WIDTH = 960  # 窗体宽度
 HEIGHT = 640  # 窗体高度
 SIZE = 40  # 方格大小
+NUMX = int(WIDTH / SIZE) - 1  # x、y轴方格子数-1
+NUMY = int(HEIGHT / SIZE) - 1
+TARGET = [random.randint(0, NUMX), random.randint(0, NUMY)]  # 目标坐标
+isEat = False
 LINEWIDTH = 1  # 线宽
 FPS = 30  # 帧率
 SPEED = FPS / 3  # 蛇的移动速度，小于FPS为好
@@ -32,14 +38,13 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-if WIDTH % 40 == 0 and HEIGHT % 40 == 0:  # SIZE是否可以被整除
-    pass
-else:  # 无法整除就结束
-    print("Size not proper")
-    exit(0)
-
 while True:
     screen.fill(CBACK)  # 清空画面为背景色
+
+    if isEat:  # 被吃掉之后随机生成目标
+        TARGET[0] = random.randint(0, NUMX)
+        TARGET[1] = random.randint(0, NUMY)
+        isEat = False
 
     # 绘制网格
     for x in range(SIZE, WIDTH, SIZE):
@@ -47,14 +52,16 @@ while True:
     for y in range(SIZE, HEIGHT, SIZE):
         pygame.draw.line(screen, CLINE, (0, y), (WIDTH, y), LINEWIDTH)
 
-    # 绘制蛇
+    # 绘制蛇 和 目标
     tmp_len = len(POSITION)
-    POSHEAD = tmp_len - 1  # 蛇头位于数组的第POSHEAD个位置
+    POSHEAD = tmp_len - 2  # 蛇头位于数组的第POSHEAD个位置
     for i in range(tmp_len):
         pygame.draw.rect(screen, CSNAKE,
                          (POSITION[i][0] * SIZE + 1, POSITION[i][1] * SIZE + 1,
                           SIZE - 1, SIZE - 1), 0)
-
+    pygame.draw.rect(
+        screen, CTARGET,
+        (TARGET[0] * SIZE + 1, TARGET[1] * SIZE + 1, SIZE - 1, SIZE - 1), 0)
     # 获取键盘输入
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # 右上角x 退出程序
@@ -76,21 +83,23 @@ while True:
             elif event.key in (K_RIGHT, K_d):
                 DIRECTION = 3
 
-    if TMPFRAME % SPEED == 0:
-        print("Mov")
-        # 修改蛇的位置
+    if TMPFRAME % SPEED == 0:  # 修改蛇的位置、蛇与目标碰撞检测
         POSITION.reverse()  # 旋转、弹出蛇尾
         POSITION.pop()
         POSITION.reverse()
         tmp = copy.deepcopy(POSITION)  # 深拷贝
         if DIRECTION == 0:
-            tmp[POSHEAD - 1][1] -= 1  # 蛇头位置变化
+            tmp[POSHEAD][1] -= 1  # 蛇头位置变化
         elif DIRECTION == 1:
-            tmp[POSHEAD - 1][1] += 1  # 蛇头位置变化
+            tmp[POSHEAD][1] += 1  # 蛇头位置变化
         elif DIRECTION == 2:
-            tmp[POSHEAD - 1][0] -= 1  # 蛇头位置变化
+            tmp[POSHEAD][0] -= 1  # 蛇头位置变化
         elif DIRECTION == 3:
-            tmp[POSHEAD - 1][0] += 1  # 蛇头位置变化
+            tmp[POSHEAD][0] += 1  # 蛇头位置变化
+        # 目标碰撞检测
+        if tmp[POSHEAD][0] == TARGET[0] and tmp[POSHEAD][1] == TARGET[1]:
+            isEat = True
+            print("Eat")
         POSITION.append(tmp.pop())  # 添加蛇头
         TMPFRAME = 1  # 重置，防止溢出
     TMPFRAME += 1
