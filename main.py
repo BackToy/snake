@@ -18,6 +18,8 @@ HEIGHT = 640  # 窗体高度
 SIZE = 40  # 方格大小
 LINEWIDTH = 1  # 线宽
 FPS = 30  # 帧率
+SPEED = FPS / 3  # 蛇的移动速度，小于FPS为好
+TMPFRAME = 1  # 帧数计数器
 
 CBACK = (153, 255, 0)  # 背景色
 CLINE = (0, 0, 255)  # 线条颜色
@@ -74,21 +76,24 @@ while True:
             elif event.key in (K_RIGHT, K_d):
                 DIRECTION = 3
 
-    # 修改蛇的位置
-    POSITION.reverse()  # 旋转、弹出蛇尾
-    POSITION.pop()
-    POSITION.reverse()
-    tmp = copy.deepcopy(POSITION)  # 深拷贝
-    if DIRECTION == 0:
-        tmp[POSHEAD - 1][1] -= 1  # 蛇头位置变化
-    elif DIRECTION == 1:
-        tmp[POSHEAD - 1][1] += 1  # 蛇头位置变化
-    elif DIRECTION == 2:
-        tmp[POSHEAD - 1][0] -= 1  # 蛇头位置变化
-    elif DIRECTION == 3:
-        tmp[POSHEAD - 1][0] += 1  # 蛇头位置变化
-
-    POSITION.append(tmp.pop())  # 添加蛇头
+    if TMPFRAME % SPEED == 0:
+        print("Mov")
+        # 修改蛇的位置
+        POSITION.reverse()  # 旋转、弹出蛇尾
+        POSITION.pop()
+        POSITION.reverse()
+        tmp = copy.deepcopy(POSITION)  # 深拷贝
+        if DIRECTION == 0:
+            tmp[POSHEAD - 1][1] -= 1  # 蛇头位置变化
+        elif DIRECTION == 1:
+            tmp[POSHEAD - 1][1] += 1  # 蛇头位置变化
+        elif DIRECTION == 2:
+            tmp[POSHEAD - 1][0] -= 1  # 蛇头位置变化
+        elif DIRECTION == 3:
+            tmp[POSHEAD - 1][0] += 1  # 蛇头位置变化
+        POSITION.append(tmp.pop())  # 添加蛇头
+        TMPFRAME = 1  # 重置，防止溢出
+    TMPFRAME += 1
 
     clock.tick(FPS)  # 以每秒30帧的速率进行绘制
     pygame.display.update()  # 更新画面
