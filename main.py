@@ -101,12 +101,25 @@ while True:
         if tmp[POSHEAD][0] == TARGET[0] and tmp[POSHEAD][1] == TARGET[1]:
             isEat = True
             print("Eat")
+
         # 边框碰撞检测
         if tmp[POSHEAD][0] < 0 or tmp[POSHEAD][0] > NUMX:
             isFail = True
         elif tmp[POSHEAD][1] < 0 or tmp[POSHEAD][1] > NUMY:
             isFail = True
-        POSITION.append(tmp.pop())  # 添加蛇头
+        POSITION.append(tmp.pop())  # 添加移动后的新坐标
+        if isEat:  # 吃掉目标后添加新蛇头坐标
+            tmp = copy.deepcopy(POSITION)
+            POSHEAD = len(POSITION) - 1
+            if DIRECTION == 0:
+                tmp[POSHEAD][1] -= 1
+            elif DIRECTION == 1:
+                tmp[POSHEAD][1] += 1
+            elif DIRECTION == 2:
+                tmp[POSHEAD][0] -= 1
+            elif DIRECTION == 3:
+                tmp[POSHEAD][0] += 1
+            POSITION.append(tmp.pop())
         TMPFRAME = 1  # 重置，防止溢出
     TMPFRAME += 1
 
