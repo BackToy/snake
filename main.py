@@ -22,6 +22,7 @@ NUMX = int(WIDTH / SIZE) - 1  # x、y轴方格子数-1
 NUMY = int(HEIGHT / SIZE) - 1
 TARGET = [random.randint(0, NUMX), random.randint(0, NUMY)]  # 目标坐标
 isEat = False
+isFail = False
 LINEWIDTH = 1  # 线宽
 FPS = 30  # 帧率
 SPEED = FPS / 3  # 蛇的移动速度，小于FPS为好
@@ -83,7 +84,7 @@ while True:
             elif event.key in (K_RIGHT, K_d):
                 DIRECTION = 3
 
-    if TMPFRAME % SPEED == 0:  # 修改蛇的位置、蛇与目标碰撞检测
+    if TMPFRAME % SPEED == 0 and not isFail:  # 修改蛇的位置、蛇与目标碰撞检测
         POSITION.reverse()  # 旋转、弹出蛇尾
         POSITION.pop()
         POSITION.reverse()
@@ -100,6 +101,11 @@ while True:
         if tmp[POSHEAD][0] == TARGET[0] and tmp[POSHEAD][1] == TARGET[1]:
             isEat = True
             print("Eat")
+        # 边框碰撞检测
+        if tmp[POSHEAD][0] < 0 or tmp[POSHEAD][0] > NUMX:
+            isFail = True
+        elif tmp[POSHEAD][1] < 0 or tmp[POSHEAD][1] > NUMY:
+            isFail = True
         POSITION.append(tmp.pop())  # 添加蛇头
         TMPFRAME = 1  # 重置，防止溢出
     TMPFRAME += 1
