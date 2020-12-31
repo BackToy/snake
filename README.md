@@ -15,6 +15,8 @@ GPL 3.0
 - [Python中list的复制及深拷贝与浅拷贝探究](https://www.cnblogs.com/Black-rainbow/p/9577029.html)
 
 ## ChangeLog
+- 2020/12/31  
+显示得分
 - 2020/12/30  
 实现蛇身整体的移动
 实现蛇移动速率的控制

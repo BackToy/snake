@@ -27,7 +27,7 @@ LINEWIDTH = 1  # 线宽
 FPS = 30  # 帧率
 SPEED = FPS / 3  # 蛇的移动速度，小于FPS为好
 TMPFRAME = 1  # 帧数计数器
-
+SCORE = 0  # 得分
 CBACK = (153, 255, 0)  # 背景色
 CLINE = (0, 0, 255)  # 线条颜色
 CSNAKE = (245, 245, 220)  # 蛇的颜色
@@ -38,6 +38,7 @@ DIRECTION = 3  # 方向，0～3 上下左右
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
+font = pygame.font.SysFont('', 30)  # 得分的字体
 
 while True:
     screen.fill(CBACK)  # 清空画面为背景色
@@ -100,7 +101,7 @@ while True:
         # 目标碰撞检测
         if tmp[POSHEAD][0] == TARGET[0] and tmp[POSHEAD][1] == TARGET[1]:
             isEat = True
-            print("Eat")
+            SCORE += 1  # 分数加一
 
         # 边框碰撞检测
         if tmp[POSHEAD][0] < 0 or tmp[POSHEAD][0] > NUMX:
@@ -122,6 +123,9 @@ while True:
             POSITION.append(tmp.pop())
         TMPFRAME = 1  # 重置，防止溢出
     TMPFRAME += 1
+    # 显示分数
+    imgText = font.render(str(SCORE), True, CLINE)
+    screen.blit(imgText, (0, 0))
 
     clock.tick(FPS)  # 以每秒30帧的速率进行绘制
     pygame.display.update()  # 更新画面
