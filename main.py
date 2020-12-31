@@ -14,6 +14,7 @@ from pygame.locals import K_SPACE, K_UP, K_w, K_DOWN, K_s,\
     K_LEFT, K_a, K_RIGHT, K_d, K_ESCAPE
 import copy
 import random
+import os
 
 WIDTH = 960  # 窗体宽度
 HEIGHT = 640  # 窗体高度
@@ -28,12 +29,25 @@ FPS = 30  # 帧率
 SPEED = FPS / 3  # 蛇的移动速度，小于FPS为好
 TMPFRAME = 1  # 帧数计数器
 SCORE = 0  # 得分
+SCORE_MAX = 0  # 历史最高得分
+FILE_SCORE = "./score.txt"
+
 CBACK = (153, 255, 0)  # 背景色
 CLINE = (0, 0, 255)  # 线条颜色
 CSNAKE = (245, 245, 220)  # 蛇的颜色
 CTARGET = (255, 0, 0)  # 目标颜色
 POSITION = [[10, 3], [10, 4], [10, 5]]  # 蛇的身体坐标，列表中嵌套列表
 DIRECTION = 3  # 方向，0～3 上下左右
+
+if os.path.exists(FILE_SCORE):
+    with open(FILE_SCORE, "r") as f:
+        try:
+            SCORE_MAX = int(f.read())
+        except Exception as m:
+            print("Warning： ", m, "， 历史的得分不存在")
+            SCORE_MAX = 0
+else:
+    os.mknod(FILE_SCORE)
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -102,6 +116,8 @@ while True:
         if tmp[POSHEAD][0] == TARGET[0] and tmp[POSHEAD][1] == TARGET[1]:
             isEat = True
             SCORE += 1  # 分数加一
+            if SCORE > SCORE_MAX:
+                SCORE_MAX = SCORE
 
         # 边框碰撞检测
         if tmp[POSHEAD][0] < 0 or tmp[POSHEAD][0] > NUMX:
@@ -121,10 +137,18 @@ while True:
             elif DIRECTION == 3:
                 tmp[POSHEAD][0] += 1
             POSITION.append(tmp.pop())
+        if isFail:
+            if os.path.exists(FILE_SCORE):
+                with open(FILE_SCORE, "w") as f:
+                    try:
+                        f.write(str(SCORE_MAX))
+                    except Exception as m:
+                        print("Warning： ", m, "， 存储最高得分失败")
         TMPFRAME = 1  # 重置，防止溢出
     TMPFRAME += 1
     # 显示分数
-    imgText = font.render(str(SCORE), True, CLINE)
+    tmpstr = "Score: " + str(SCORE) + "    Max Score: " + str(SCORE_MAX)
+    imgText = font.render(tmpstr, True, CLINE)
     screen.blit(imgText, (0, 0))
 
     clock.tick(FPS)  # 以每秒30帧的速率进行绘制
