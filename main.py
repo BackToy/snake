@@ -63,8 +63,7 @@ while True:
                 POSITION.index(TARGET)  # 在队列里返回下标，不在则抛出异常
                 TARGET[0] = random.randint(1, 3)
                 TARGET[1] = random.randint(1, 6)
-            except Exception as e:
-                print("正确生成目标，目标： ", e)
+            except (Exception):
                 break
         isEat = False
 
@@ -91,8 +90,7 @@ while True:
         tmpHead = tmp.pop()  # 蛇头
         tmp.index(tmpHead)  # 蛇头在蛇身里返回下标，不在则抛出异常
         isFail = True  # 咬到自己啦，结束
-    except Exception as e:
-        print("你没咬到自己，加油。这是个为了消除flake8(F841)警告的无用提示： ", e)
+    except (Exception):
         pass  # 没咬到自己
 
     # 获取键盘输入

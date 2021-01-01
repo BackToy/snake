@@ -13,7 +13,8 @@
 左：A / Left  
 右：D / Right  
 退出： Esc
-## 一个问题
+## 值得的问题记录
+### flake8 E722 && F841
 ```python
 # 咬蛇自尽判断
     try:
@@ -26,6 +27,12 @@
         pass  # 没咬到自己
 ```
 在上面的代码中，我需要这个异常，但是我不用e的话，flake8会产生F841警告，还没想到除了使用这个变量e之外怎么消除这个警告。（直接except的会产生另外一个警告-.-）
+
+这样使用两个warning都不会有:  
+```python
+except (Exception):  
+    pass
+```
 ## License
 GPL 3.0
 ## References
