@@ -52,7 +52,7 @@ else:
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
-font = pygame.font.SysFont('', 30)  # 得分的字体
+font = pygame.font.Font(None, 30)  # 得分字体，内置，不支持中文
 
 while True:
     screen.fill(CBACK)  # 清空画面为背景色
@@ -115,9 +115,7 @@ while True:
                 DIRECTION = 3
 
     if TMPFRAME % SPEED == 0 and not isFail:  # 修改蛇的位置、蛇与目标碰撞检测
-        POSITION.reverse()  # 旋转、弹出蛇尾
-        POSITION.pop()
-        POSITION.reverse()
+        del POSITION[0]  # 删除旧蛇尾
         tmp = copy.deepcopy(POSITION)  # 深拷贝
         if DIRECTION == 0:
             tmp[POSHEAD][1] -= 1  # 蛇头位置变化

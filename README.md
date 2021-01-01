@@ -13,6 +13,11 @@
 左：A / Left  
 右：D / Right  
 退出： Esc
+## 自定义参数说明
+格子大小和数量、速度、颜色、帧率均支持自定义
+- SPEED：表示速度快慢的量，越小越快
+- SIZE：一个格子的宽度，是宽高的公约数时会美观一点，显示器像素越多时建议往大调，不然太小了
+
 ## 值得的问题记录
 ### flake8 E722 && F841
 ```python
@@ -36,20 +41,28 @@ except (Exception):
 ## License
 GPL 3.0
 ## References
-- [贪吃蛇python代码分析](https://blog.csdn.net/weixin_41925383/article/details/99938886)
-- [ guliang21 /pygame ](https://github.com/guliang21/pygame)
+- [贪吃蛇python代码分析](https://blog.csdn.net/weixin_41925383/article/details/99938886)  
+使用assert中止程序（格子数不整齐）
+有开场动画！！
+速度太快不方便控制、flake8一堆  
+- [ guliang21 /pygame ](https://github.com/guliang21/pygame)  
+使用in判断目标和蛇身是否重叠、咬舌自尽  
+用(x,y)做方向编码易于计算下一个坐标
+Simhei字体不是每个OS都有、少量flake8
 - [Python中list的复制及深拷贝与浅拷贝探究](https://www.cnblogs.com/Black-rainbow/p/9577029.html)
 
 ## ChangeLog
-- 2020/12/31  
-fix蛇咬到自己未结束
+- 2021/1/1  
+fix flake8 E722 && F841  
+fix蛇咬到自己未结束  
 fix目标恰好在蛇身上的情况
+- 2020/12/31  
 存储历史最高得分
 显示得分
 - 2020/12/30  
-实现蛇身整体的移动
-实现蛇移动速率的控制
-目标的生成和目标碰撞检测
+实现蛇身整体的移动  
+实现蛇移动速率的控制  
+目标的生成和目标碰撞检测  
 边框碰撞检测
 实现吃掉之后的蛇身延长
 - 2020/12/9  
