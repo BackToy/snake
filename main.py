@@ -76,7 +76,7 @@ while True:
 
     # 绘制蛇 和 目标
     tmp_len = len(POSITION)
-    POSHEAD = tmp_len - 2  # 蛇头位于数组的第POSHEAD个位置
+    POSHEAD = tmp_len - 2  # 蛇头位于数组的第（tmp_len-1）个位置
     for i in range(tmp_len):
         pygame.draw.rect(screen, CSNAKE,
                          (POSITION[i][0] * SIZE + 1, POSITION[i][1] * SIZE + 1,
@@ -84,6 +84,17 @@ while True:
     pygame.draw.rect(
         screen, CTARGET,
         (TARGET[0] * SIZE + 1, TARGET[1] * SIZE + 1, SIZE - 1, SIZE - 1), 0)
+
+    # 咬蛇自尽判断
+    try:
+        tmp = copy.deepcopy(POSITION)
+        tmpHead = tmp.pop()  # 蛇头
+        tmp.index(tmpHead)  # 蛇头在蛇身里返回下标，不在则抛出异常
+        isFail = True  # 咬到自己啦，结束
+    except Exception as e:
+        print("你没咬到自己，加油。这是个为了消除flake8(F841)警告的无用提示： ", e)
+        pass  # 没咬到自己
+
     # 获取键盘输入
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # 右上角x 退出程序

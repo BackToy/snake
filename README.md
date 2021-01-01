@@ -13,6 +13,19 @@
 左：A / Left  
 右：D / Right  
 退出： Esc
+## 一个问题
+```python
+# 咬蛇自尽判断
+    try:
+        tmp = copy.deepcopy(POSITION)
+        tmpHead = tmp.pop()  # 蛇头
+        tmp.index(tmpHead)  # 蛇头在蛇身里返回下标，不在则抛出异常
+        isFail = True  # 咬到自己啦，结束
+    except Exception as e:
+        print("你没咬到自己，加油。这是个为了消除flake8(F841)警告的无用提示： ", e)
+        pass  # 没咬到自己
+```
+在上面的代码中，我需要这个异常，但是我不用e的话，flake8会产生F841警告，还没想到除了使用这个变量e之外怎么消除这个警告。（直接except的会产生另外一个警告-.-）
 ## License
 GPL 3.0
 ## References
@@ -22,10 +35,10 @@ GPL 3.0
 
 ## ChangeLog
 - 2020/12/31  
-显示得分
-存储历史最高得分
+fix蛇咬到自己未结束
 fix目标恰好在蛇身上的情况
-蛇咬到自己
+存储历史最高得分
+显示得分
 - 2020/12/30  
 实现蛇身整体的移动
 实现蛇移动速率的控制
