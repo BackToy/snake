@@ -24,6 +24,7 @@ NUMY = int(HEIGHT / SIZE) - 1
 TARGET = [random.randint(0, NUMX), random.randint(0, NUMY)]  # 目标坐标
 isEat = False
 isFail = False
+isPause = False
 LINEWIDTH = 1  # 线宽
 FPS = 30  # 帧率
 SPEED = FPS / 3  # 蛇的移动速度，小于FPS为好
@@ -100,7 +101,7 @@ while True:
             exit(0)
         if event.type == pygame.KEYDOWN:  # 键盘事件，获取方向
             if event.key == K_SPACE:
-                print("space")
+                isPause = not isPause
             elif event.key == K_ESCAPE:  # 键盘左上角Esc 退出程序
                 print("esq")
                 pygame.quit()
@@ -113,52 +114,52 @@ while True:
                 DIRECTION = 2
             elif event.key in (K_RIGHT, K_d):
                 DIRECTION = 3
-
-    if TMPFRAME % SPEED == 0 and not isFail:  # 修改蛇的位置、蛇与目标碰撞检测
-        del POSITION[0]  # 删除旧蛇尾
-        tmp = copy.deepcopy(POSITION)  # 深拷贝
-        if DIRECTION == 0:
-            tmp[POSHEAD][1] -= 1  # 蛇头位置变化
-        elif DIRECTION == 1:
-            tmp[POSHEAD][1] += 1  # 蛇头位置变化
-        elif DIRECTION == 2:
-            tmp[POSHEAD][0] -= 1  # 蛇头位置变化
-        elif DIRECTION == 3:
-            tmp[POSHEAD][0] += 1  # 蛇头位置变化
-        # 目标碰撞检测
-        if tmp[POSHEAD][0] == TARGET[0] and tmp[POSHEAD][1] == TARGET[1]:
-            isEat = True
-            SCORE += 1  # 分数加一
-            if SCORE > SCORE_MAX:
-                SCORE_MAX = SCORE
-
-        # 边框碰撞检测
-        if tmp[POSHEAD][0] < 0 or tmp[POSHEAD][0] > NUMX:
-            isFail = True
-        elif tmp[POSHEAD][1] < 0 or tmp[POSHEAD][1] > NUMY:
-            isFail = True
-        POSITION.append(tmp.pop())  # 添加移动后的新坐标
-        if isEat:  # 吃掉目标后添加新蛇头坐标
-            tmp = copy.deepcopy(POSITION)
-            POSHEAD = len(POSITION) - 1
+    if not isPause:
+        if TMPFRAME % SPEED == 0 and not isFail:  # 修改蛇的位置、蛇与目标碰撞检测
+            del POSITION[0]  # 删除旧蛇尾
+            tmp = copy.deepcopy(POSITION)  # 深拷贝
             if DIRECTION == 0:
-                tmp[POSHEAD][1] -= 1
+                tmp[POSHEAD][1] -= 1  # 蛇头位置变化
             elif DIRECTION == 1:
-                tmp[POSHEAD][1] += 1
+                tmp[POSHEAD][1] += 1  # 蛇头位置变化
             elif DIRECTION == 2:
-                tmp[POSHEAD][0] -= 1
+                tmp[POSHEAD][0] -= 1  # 蛇头位置变化
             elif DIRECTION == 3:
-                tmp[POSHEAD][0] += 1
-            POSITION.append(tmp.pop())
-        if isFail:
-            if os.path.exists(FILE_SCORE):
-                with open(FILE_SCORE, "w") as f:
-                    try:
-                        f.write(str(SCORE_MAX))
-                    except Exception as m:
-                        print("Warning： ", m, "， 存储最高得分失败")
-        TMPFRAME = 1  # 重置，防止溢出
-    TMPFRAME += 1
+                tmp[POSHEAD][0] += 1  # 蛇头位置变化
+            # 目标碰撞检测
+            if tmp[POSHEAD][0] == TARGET[0] and tmp[POSHEAD][1] == TARGET[1]:
+                isEat = True
+                SCORE += 1  # 分数加一
+                if SCORE > SCORE_MAX:
+                    SCORE_MAX = SCORE
+
+            # 边框碰撞检测
+            if tmp[POSHEAD][0] < 0 or tmp[POSHEAD][0] > NUMX:
+                isFail = True
+            elif tmp[POSHEAD][1] < 0 or tmp[POSHEAD][1] > NUMY:
+                isFail = True
+            POSITION.append(tmp.pop())  # 添加移动后的新坐标
+            if isEat:  # 吃掉目标后添加新蛇头坐标
+                tmp = copy.deepcopy(POSITION)
+                POSHEAD = len(POSITION) - 1
+                if DIRECTION == 0:
+                    tmp[POSHEAD][1] -= 1
+                elif DIRECTION == 1:
+                    tmp[POSHEAD][1] += 1
+                elif DIRECTION == 2:
+                    tmp[POSHEAD][0] -= 1
+                elif DIRECTION == 3:
+                    tmp[POSHEAD][0] += 1
+                POSITION.append(tmp.pop())
+            if isFail:
+                if os.path.exists(FILE_SCORE):
+                    with open(FILE_SCORE, "w") as f:
+                        try:
+                            f.write(str(SCORE_MAX))
+                        except Exception as m:
+                            print("Warning： ", m, "， 存储最高得分失败")
+            TMPFRAME = 1  # 重置，防止溢出
+        TMPFRAME += 1
     # 显示分数
     tmpstr = "Score: " + str(SCORE) + "    Max Score: " + str(SCORE_MAX)
     imgText = font.render(tmpstr, True, CLINE)
