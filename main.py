@@ -133,13 +133,13 @@ while True:
             elif event.key == K_ESCAPE:  # 键盘左上角Esc 退出程序
                 pygame.quit()
                 exit(0)
-            elif event.key in (K_UP, K_w):
+            elif event.key in (K_UP, K_w) and DIRECTION != 1:
                 DIRECTION = 0
-            elif event.key in (K_DOWN, K_s):
+            elif event.key in (K_DOWN, K_s) and DIRECTION != 0:
                 DIRECTION = 1
-            elif event.key in (K_LEFT, K_a):
+            elif event.key in (K_LEFT, K_a) and DIRECTION != 3:
                 DIRECTION = 2
-            elif event.key in (K_RIGHT, K_d):
+            elif event.key in (K_RIGHT, K_d) and DIRECTION != 2:
                 DIRECTION = 3
     if not isPause:
         if TMPFRAME % SPEED == 0 and not isFail:  # 修改蛇的位置、蛇与目标碰撞检测

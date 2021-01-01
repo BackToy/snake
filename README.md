@@ -55,6 +55,7 @@ Simhei字体不是每个OS都有、少量flake8
 
 ## ChangeLog
 - 2021/1/1  
+fix掉头咬死自己的bug：在向右走，按左就会挂  
 结束后按空格键重新开始  
 fix flake8 E722 && F841  
 fix蛇咬到自己未结束  
