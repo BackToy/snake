@@ -18,7 +18,7 @@ import os
 
 WIDTH = 960  # 窗体宽度
 HEIGHT = 640  # 窗体高度
-SIZE = 40  # 方格大小
+SIZE = 80  # 方格大小
 NUMX = int(WIDTH / SIZE) - 1  # x、y轴方格子数-1
 NUMY = int(HEIGHT / SIZE) - 1
 TARGET = [random.randint(0, NUMX), random.randint(0, NUMY)]  # 目标坐标
@@ -36,7 +36,7 @@ CBACK = (153, 255, 0)  # 背景色
 CLINE = (0, 0, 255)  # 线条颜色
 CSNAKE = (245, 245, 220)  # 蛇的颜色
 CTARGET = (255, 0, 0)  # 目标颜色
-POSITION = [[10, 3], [10, 4], [10, 5]]  # 蛇的身体坐标，列表中嵌套列表
+POSITION = [[1, 3], [1, 4], [1, 5]]  # 蛇的身体坐标，列表中嵌套列表
 DIRECTION = 3  # 方向，0～3 上下左右
 
 if os.path.exists(FILE_SCORE):
@@ -58,8 +58,14 @@ while True:
     screen.fill(CBACK)  # 清空画面为背景色
 
     if isEat:  # 被吃掉之后随机生成目标
-        TARGET[0] = random.randint(0, NUMX)
-        TARGET[1] = random.randint(0, NUMY)
+        while True:
+            try:
+                POSITION.index(TARGET)  # 在队列里返回下标，不在则抛出异常
+                TARGET[0] = random.randint(1, 3)
+                TARGET[1] = random.randint(1, 6)
+            except Exception as e:
+                print("正确生成目标，目标： ", e)
+                break
         isEat = False
 
     # 绘制网格
