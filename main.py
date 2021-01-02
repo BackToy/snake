@@ -22,7 +22,7 @@ SIZE = 80  # 方格大小
 NUMX = int(WIDTH / SIZE) - 1  # x、y轴方格子数-1
 NUMY = int(HEIGHT / SIZE) - 1
 TARGET = [random.randint(0, NUMX), random.randint(0, NUMY)]  # 目标坐标
-isEat = False
+isEat = True  # 第一次生成目标也进行蛇身检测
 isFail = False
 isPause = False
 LINEWIDTH = 1  # 线宽
@@ -122,13 +122,9 @@ while True:
     screen.fill(CBACK)  # 清空画面为背景色
 
     if isEat:  # 被吃掉之后随机生成目标
-        while True:
-            try:
-                POSITION.index(TARGET)  # 在队列里返回下标，不在则抛出异常
-                TARGET[0] = random.randint(1, 3)
-                TARGET[1] = random.randint(1, 6)
-            except (Exception):
-                break
+        while TARGET in POSITION:  # 如果目标和蛇重叠一直循环
+            TARGET[0] = random.randint(0, NUMX)
+            TARGET[1] = random.randint(0, NUMY)
         isEat = False
 
     # 绘制网格
