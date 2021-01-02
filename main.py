@@ -11,7 +11,7 @@
 '''
 import pygame
 from pygame.locals import K_SPACE, K_UP, K_w, K_DOWN, K_s,\
-    K_LEFT, K_a, K_RIGHT, K_d, K_ESCAPE
+    K_LEFT, K_a, K_RIGHT, K_d, K_ESCAPE, KEYUP
 import copy
 import random
 import os
@@ -53,6 +53,45 @@ def savedata(filepath, data):
                 print("Warning： ", m, "， 存储最高得分失败")
 
 
+def showStartScreen():
+    """
+    现实开场动画
+    """
+    print("show")
+    titleFont = pygame.font.Font(None, 100)
+    titleSurf1 = titleFont.render('Kearney!', True, CSNAKE, CTARGET)
+    titleSurf2 = titleFont.render('Kearney!', True, CBACK)
+
+    pressKeySurf = font.render('Press Any key to play.', True, CLINE)
+    pressKeyRect = pressKeySurf.get_rect()
+    pressKeyRect.topleft = (WIDTH / 3, HEIGHT / 5)
+
+    degrees1 = 0
+    degrees2 = 0
+    while True:
+        screen.fill(CBACK)
+        rotatedSurf1 = pygame.transform.rotate(titleSurf1, degrees1)
+        rotatedRect1 = rotatedSurf1.get_rect()
+        rotatedRect1.center = (WIDTH / 2, HEIGHT / 2)
+        screen.blit(rotatedSurf1, rotatedRect1)
+
+        rotatedSurf2 = pygame.transform.rotate(titleSurf2, degrees2)
+        rotatedRect2 = rotatedSurf2.get_rect()
+        rotatedRect2.center = (WIDTH / 2, HEIGHT / 2)
+        screen.blit(rotatedSurf2, rotatedRect2)
+
+        screen.blit(pressKeySurf, pressKeyRect)
+
+        keyUpEvents = pygame.event.get(KEYUP)
+        if len(keyUpEvents) > 0:  # 按下任意键退出
+            pygame.event.get()  # 清空时间队列
+            return
+        pygame.display.update()
+        clock.tick(FPS)
+        degrees1 += 3  # rotate by 3 degrees each frame
+        degrees2 += 7  # rotate by 7 degrees each frame
+
+
 if os.path.exists(FILE_SCORE):
     with open(FILE_SCORE, "r") as f:
         try:
@@ -68,6 +107,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 font = pygame.font.Font(None, 30)  # 得分字体，内置，不支持中文
 fontBig = pygame.font.Font(None, 70)
+showStartScreen()
 
 while True:
     screen.fill(CBACK)  # 清空画面为背景色

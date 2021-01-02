@@ -43,6 +43,7 @@ except (Exception):
 ## License
 GPL 3.0
 ## References
+- [Nibbles: guide a worm around a maze](https://wiki.gnome.org/Apps/Nibbles)
 - [贪吃蛇python代码分析](https://blog.csdn.net/weixin_41925383/article/details/99938886)  
 使用assert中止程序（格子数不整齐）
 有开场动画！！
@@ -54,6 +55,8 @@ Simhei字体不是每个OS都有、少量flake8
 - [Python中list的复制及深拷贝与浅拷贝探究](https://www.cnblogs.com/Black-rainbow/p/9577029.html)
 
 ## ChangeLog
+- 2021/1/2  
+添加开场动画
 - 2021/1/1  
 fix掉头咬死自己的bug：在向右走，按左就会挂  
 结束后按空格键重新开始  
