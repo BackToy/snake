@@ -92,6 +92,15 @@ def showStartScreen():
         degrees2 += 7  # rotate by 7 degrees each frame
 
 
+def terminate():
+    """
+    保存最高的分，退出程序
+    """
+    savedata(FILE_SCORE, SCORE_MAX)
+    pygame.quit()
+    exit(0)
+
+
 if os.path.exists(FILE_SCORE):
     with open(FILE_SCORE, "r") as f:
         try:
@@ -152,8 +161,7 @@ while True:
     # 获取键盘输入
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # 右上角x 退出程序
-            pygame.quit()
-            exit(0)
+            terminate()
         if event.type == pygame.KEYDOWN:  # 键盘事件，获取方向
             if event.key == K_SPACE:
                 isPause = not isPause  # 暂停
@@ -171,8 +179,7 @@ while True:
                     isFail = False
 
             elif event.key == K_ESCAPE:  # 键盘左上角Esc 退出程序
-                pygame.quit()
-                exit(0)
+                terminate()
             elif event.key in (K_UP, K_w) and DIRECTION != 1:
                 DIRECTION = 0
             elif event.key in (K_DOWN, K_s) and DIRECTION != 0:
@@ -199,8 +206,6 @@ while True:
                 SCORE += 1  # 分数加一
                 if SCORE > SCORE_MAX:
                     SCORE_MAX = SCORE
-                    savedata(FILE_SCORE, SCORE_MAX)
-
             # 边框碰撞检测
             if tmp[POSHEAD][0] < 0 or tmp[POSHEAD][0] > NUMX or tmp[POSHEAD][
                     1] < 0 or tmp[POSHEAD][1] > NUMY:
