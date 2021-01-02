@@ -39,6 +39,7 @@ CSNAKE = (245, 245, 220)  # 蛇的颜色
 CTARGET = (255, 0, 0)  # 目标颜色
 POSITION = [[1, 3], [1, 4], [1, 5]]  # 蛇的身体坐标，列表中嵌套列表
 DIRECTION = 3  # 方向，0～3 上下左右
+isMove = False
 
 
 def savedata(filepath, data):
@@ -57,7 +58,6 @@ def showStartScreen():
     """
     现实开场动画
     """
-    print("show")
     titleFont = pygame.font.Font(None, 100)
     titleSurf1 = titleFont.render('Kearney!', True, CSNAKE, CTARGET)
     titleSurf2 = titleFont.render('Kearney!', True, CBACK)
@@ -180,14 +180,18 @@ while True:
 
             elif event.key == K_ESCAPE:  # 键盘左上角Esc 退出程序
                 terminate()
-            elif event.key in (K_UP, K_w) and DIRECTION != 1:
+            elif event.key in (K_UP, K_w) and DIRECTION != 1 and isMove:
                 DIRECTION = 0
-            elif event.key in (K_DOWN, K_s) and DIRECTION != 0:
+                isMove = False
+            elif event.key in (K_DOWN, K_s) and DIRECTION != 0 and isMove:
                 DIRECTION = 1
-            elif event.key in (K_LEFT, K_a) and DIRECTION != 3:
+                isMove = False
+            elif event.key in (K_LEFT, K_a) and DIRECTION != 3 and isMove:
                 DIRECTION = 2
-            elif event.key in (K_RIGHT, K_d) and DIRECTION != 2:
+                isMove = False
+            elif event.key in (K_RIGHT, K_d) and DIRECTION != 2 and isMove:
                 DIRECTION = 3
+                isMove = False
     if not isPause:
         if TMPFRAME % SPEED == 0 and not isFail:  # 修改蛇的位置、蛇与目标碰撞检测
             del POSITION[0]  # 删除旧蛇尾，现在蛇头位于数组的第（tmp_len-2）个位置
@@ -212,6 +216,7 @@ while True:
                 isFail = True
                 isPause = True
             POSITION.append(tmp.pop())  # 添加移动后的新坐标
+            isMove = True
             if isEat:  # 吃掉目标后添加新蛇头坐标
                 tmp = copy.deepcopy(POSITION)
                 POSHEAD = len(POSITION) - 1
