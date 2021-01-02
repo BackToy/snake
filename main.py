@@ -12,7 +12,6 @@
 import pygame
 from pygame.locals import K_SPACE, K_UP, K_w, K_DOWN, K_s,\
     K_LEFT, K_a, K_RIGHT, K_d, K_ESCAPE, KEYUP
-import copy
 import random
 import os
 
@@ -135,15 +134,6 @@ while True:
     pygame.draw.rect(
         screen, CTARGET,
         (TARGET[0] * SIZE + 1, TARGET[1] * SIZE + 1, SIZE - 1, SIZE - 1), 0)
-    # 咬蛇自尽判断
-    try:
-        tmp = copy.deepcopy(POSITION)
-        tmpHead = tmp.pop()  # 蛇头
-        tmp.index(tmpHead)  # 蛇头在蛇身里返回下标，不在则抛出异常
-        isFail = True  # 咬到自己啦，结束
-        isPause = True
-    except (Exception):
-        pass  # 没咬到自己
 
     # 获取键盘输入
     for event in pygame.event.get():
@@ -195,6 +185,13 @@ while True:
                     SCORE_MAX = SCORE
             else:  # 没吃到
                 del POSITION[0]  # 删除旧蛇尾
+            # 咬蛇自尽判断
+            tmpHead = POSITION.pop()  # 蛇头
+            if tmpHead in POSITION:
+                isFail = True  # 咬到自己啦，结束
+                isPause = True
+            else:
+                POSITION.append(tmpHead)
             isMove = True
             TMPFRAME = 1  # 重置，防止溢出
         TMPFRAME += 1
