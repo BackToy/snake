@@ -17,7 +17,7 @@ import os
 
 WIDTH = 960  # 窗体宽度
 HEIGHT = 640  # 窗体高度
-SIZE = 80  # 方格大小
+SIZE = 40  # 方格大小
 NUMX = int(WIDTH / SIZE) - 1  # x、y轴方格子数-1
 NUMY = int(HEIGHT / SIZE) - 1
 TARGET = (random.randint(0, NUMX), random.randint(0, NUMY))  # 目标坐标
@@ -26,24 +26,43 @@ isFail = False
 isPause = False
 LINEWIDTH = 1  # 线宽
 FPS = 30  # 帧率
-SPEED = FPS / 3  # 蛇的移动速度，小于FPS为好
+SPEED = 5  # 蛇的移动速度，小于FPS为好
 TMPFRAME = 1  # 帧数计数器
 SCORE = 0  # 得分
 SCORE_MAX = 0  # 历史最高得分
 FILE_SCORE = "./score.txt"
 
-CBACK = (153, 255, 0)  # 背景色
-CLINE = (0, 0, 255)  # 线条颜色
-CSNAKE = (245, 245, 220)  # 蛇的颜色
+CBACK = (0, 0, 0)  # 背景色
+CLINE = (255, 255, 255)  # 线条颜色
+CSNAKE = (0, 245, 0)  # 蛇的颜色
 CTARGET = (255, 0, 0)  # 目标颜色
+CBLOCK = (50, 40, 60)  # 障碍物颜色
+BLOCK1 = [(3, 9), (4, 9), (5, 9), (6, 9)]
 POSITION = [(1, 3), (1, 4), (1, 5)]  # 蛇的身体坐标，列表中嵌套列表
 DIRECTION = (1, 0)  # 方向，x方向变化量、y方向变化量
 isMove = False
 
 
-def savedata(filepath, data):
+def drawgrid(SIZE, WIDTH, HEIGHT):
+    """绘制网格
+    参数
+    ----------
+    SIZE: 起点和步长
+    WIDTH: 区域宽度
+    HEIGHT: 区域高度
     """
-    向文件里存储数据
+    for x in range(SIZE, WIDTH, SIZE):
+        pygame.draw.line(screen, CLINE, (x, 0), (x, HEIGHT), LINEWIDTH)
+    for y in range(SIZE, HEIGHT, SIZE):
+        pygame.draw.line(screen, CLINE, (0, y), (WIDTH, y), LINEWIDTH)
+
+
+def savedata(filepath, data):
+    """向文件里存储数据
+    参数
+    ----------
+    filepath: 文件路径
+    data: 要存储的数据
     """
     if os.path.exists(filepath):
         with open(filepath, "w") as f:
@@ -54,8 +73,7 @@ def savedata(filepath, data):
 
 
 def showStartScreen():
-    """
-    展示开场动画
+    """展示开场动画
     """
     titleFont = pygame.font.Font(None, 100)
     titleSurf1 = titleFont.render('Kearney!', True, CSNAKE, CTARGET)
@@ -92,12 +110,34 @@ def showStartScreen():
 
 
 def terminate():
-    """
-    保存最高的分，退出程序
+    """保存最高的分，退出程序
     """
     savedata(FILE_SCORE, SCORE_MAX)
     pygame.quit()
     exit(0)
+
+
+def drawblock(screen, block, size, color):
+    """绘制障碍物"""
+    for i in range(len(block)):
+        pygame.draw.rect(
+            screen, color,
+            (block[i][0] * size + 1, block[i][1] * size + 1, size, size), 0)
+
+
+def draw():
+    """绘制网格、障碍物、蛇、目标"""
+    screen.fill(CBACK)  # 清空画面为背景色
+    drawgrid(SIZE, WIDTH, HEIGHT)  # 绘制网格
+    drawblock(screen, BLOCK1, SIZE, CBLOCK)  # 绘制障碍物
+    for i in range(len(POSITION)):  # 绘制蛇
+        pygame.draw.rect(screen, CSNAKE,
+                         (POSITION[i][0] * SIZE + 1, POSITION[i][1] * SIZE + 1,
+                          SIZE - 1, SIZE - 1), 0)
+    # # 绘制目标
+    pygame.draw.rect(
+        screen, CTARGET,
+        (TARGET[0] * SIZE + 1, TARGET[1] * SIZE + 1, SIZE - 1, SIZE - 1), 0)
 
 
 if os.path.exists(FILE_SCORE):
@@ -118,25 +158,7 @@ fontBig = pygame.font.Font(None, 70)
 showStartScreen()
 
 while True:
-    screen.fill(CBACK)  # 清空画面为背景色
-    # 绘制网格
-    for x in range(SIZE, WIDTH, SIZE):
-        pygame.draw.line(screen, CLINE, (x, 0), (x, HEIGHT), LINEWIDTH)
-    for y in range(SIZE, HEIGHT, SIZE):
-        pygame.draw.line(screen, CLINE, (0, y), (WIDTH, y), LINEWIDTH)
-    # 绘制蛇 和 目标
-    tmp_len = len(POSITION)
-    POSHEAD = tmp_len - 1  # 现在蛇头的位置
-    for i in range(tmp_len):
-        pygame.draw.rect(screen, CSNAKE,
-                         (POSITION[i][0] * SIZE + 1, POSITION[i][1] * SIZE + 1,
-                          SIZE - 1, SIZE - 1), 0)
-    pygame.draw.rect(
-        screen, CTARGET,
-        (TARGET[0] * SIZE + 1, TARGET[1] * SIZE + 1, SIZE - 1, SIZE - 1), 0)
-
-    # 获取键盘输入
-    for event in pygame.event.get():
+    for event in pygame.event.get():  # 获取键盘输入
         if event.type == pygame.QUIT:  # 右上角x 退出程序
             terminate()
         if event.type == pygame.KEYDOWN:  # 键盘事件，获取方向
@@ -146,7 +168,7 @@ while True:
                     POSITION = [(1, 3), (1, 4), (1, 5)]
                     DIRECTION = (1, 0)
                     SCORE = 0
-                    while TARGET in POSITION:
+                    while TARGET in POSITION or TARGET in BLOCK1:
                         TARGET = (random.randint(0, NUMX),
                                   random.randint(0, NUMY))
                     isFail = False
@@ -167,7 +189,9 @@ while True:
                 DIRECTION = (1, 0)
                 isMove = False
     if not isPause:
+        draw()
         if TMPFRAME % SPEED == 0 and not isFail:  # 修改蛇的位置、蛇与目标碰撞检测
+            POSHEAD = len(POSITION) - 1  # 蛇头的位置
             nextPos = (POSITION[POSHEAD][0] + DIRECTION[0],
                        POSITION[POSHEAD][1] + DIRECTION[1])  # 蛇头的下一个位置
             POSITION.append(nextPos)  # 添加移动后的新蛇头
@@ -176,9 +200,13 @@ while True:
                     1] < 0 or nextPos[1] > NUMY:
                 isFail = True
                 isPause = True
+            # 障碍物碰撞检测
+            if nextPos in BLOCK1:
+                isFail = True
+                isPause = True
             # 目标碰撞检测
             if nextPos == TARGET:
-                while TARGET in POSITION:  # 生成新目标如果目标和蛇重叠一直循环
+                while TARGET in POSITION or TARGET in BLOCK1:  # 生成新目标
                     TARGET = (random.randint(0, NUMX), random.randint(0, NUMY))
                 SCORE += 1  # 分数加一
                 if SCORE > SCORE_MAX:
