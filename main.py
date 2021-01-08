@@ -155,6 +155,19 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 font = pygame.font.Font(None, 30)  # 得分字体，内置，不支持中文
 fontBig = pygame.font.Font(None, 70)
+
+MCRASH = "./src/sound/crash.ogg"  # 音频
+MHIT = "./src/sound/gobble.ogg"  # 游戏失败音频
+
+try:  # 初始化音频模块并载入音频文件
+    pygame.mixer.init()
+    MHIT = pygame.mixer.Sound(MHIT)
+    MCRASH = pygame.mixer.Sound(MCRASH)
+    global isload
+    isMload = True
+except Exception:
+    print("温馨提示：请正确配置音频文件", Exception)
+
 showStartScreen()
 
 while True:
@@ -200,15 +213,18 @@ while True:
                     1] < 0 or nextPos[1] > NUMY:
                 isFail = True
                 isPause = True
+                MCRASH.play()
             # 障碍物碰撞检测
             if nextPos in BLOCK1:
                 isFail = True
                 isPause = True
+                MCRASH.play()
             # 目标碰撞检测
             if nextPos == TARGET:
                 while TARGET in POSITION or TARGET in BLOCK1:  # 生成新目标
                     TARGET = (random.randint(0, NUMX), random.randint(0, NUMY))
                 SCORE += 1  # 分数加一
+                MHIT.play()
                 if SCORE > SCORE_MAX:
                     SCORE_MAX = SCORE
             else:  # 没吃到

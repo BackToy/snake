@@ -23,21 +23,20 @@
 ## 值得记录的问题
 ### flake8 E722 && F841
 ```python
-# 咬蛇自尽判断
-    try:
-        tmp = copy.deepcopy(POSITION)
-        tmpHead = tmp.pop()  # 蛇头
-        tmp.index(tmpHead)  # 蛇头在蛇身里返回下标，不在则抛出异常
-        isFail = True  # 咬到自己啦，结束
-    except Exception as e:
-        print("你没咬到自己，加油。这是个为了消除flake8(F841)警告的无用提示： ", e)
-        pass  # 没咬到自己
+try:
+    tmp = copy.deepcopy(POSITION)
+    tmpHead = tmp.pop()  # 蛇头
+    tmp.index(tmpHead)  # 蛇头在蛇身里返回下标，不在则抛出异常
+    isFail = True  # 咬到自己啦，结束
+except Exception as e:
+    print("你没咬到自己，加油。这是个为了消除flake8(F841)警告的无用提示： ", e)
+    pass  # 没咬到自己
 ```
 在上面的代码中，我需要这个异常，但是我不用e的话，flake8会产生F841警告，还没想到除了使用这个变量e之外怎么消除这个警告。（直接except的会产生另外一个警告-.-）
 
 这样使用两个warning都不会有:  
 ```python
-except (Exception):  
+except Exception:  
     pass
 ```
 ## License
