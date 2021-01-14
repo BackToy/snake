@@ -1,6 +1,6 @@
 # snake
 ## 简介
-贪吃蛇，基于python3-pygame
+贪吃蛇，基于python3-pygame，源代码开放在[Gitte仓库](https://gitee.com/back-toy/snake)
 ### 开发环境
 - win 10 amd64
 - Visual Studio Code 1.51.0
@@ -67,30 +67,5 @@ GPL 3.0
 用(x,y)做方向编码易于计算下一个坐标
 Simhei字体不是每个OS都有、少量flake8
 - [Python中list的复制及深拷贝与浅拷贝探究](https://www.cnblogs.com/Black-rainbow/p/9577029.html)
-- [pygame_menu]()
-## ChangeLog
-- 2021/1/14  
-添加简易开始菜单  
-- 2021/1/2  
-用in优化咬舌自尽try代码  
-方向编码由一位变为两位；fix添加蛇身逻辑：之前在吃到目标时是无法在目标位置拐弯的    
-fix转向未完成时再转向咬死自己的bug：向右ing，摁下上想往上走，但是画面没来得及更新就又想向左，摁左就挂了    
-优化存储得分代码，避免多次写文件  
-添加开场动画  
-- 2021/1/1  
-fix掉头咬死自己的bug：在向右走，按左就会挂  
-结束后按空格键重新开始  
-fix flake8 E722 && F841  
-fix蛇咬到自己未结束  
-fix目标恰好在蛇身上的情况
-- 2020/12/31  
-存储历史最高得分
-显示得分
-- 2020/12/30  
-实现蛇身整体的移动  
-实现蛇移动速率的控制  
-目标的生成和目标碰撞检测  
-边框碰撞检测
-实现吃掉之后的蛇身延长
-- 2020/12/9  
-实现蛇头的移动控制
+- [pygame_menu](https://pygame-menu.readthedocs.io)
+

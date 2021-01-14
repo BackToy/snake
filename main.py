@@ -27,7 +27,7 @@ isFail = False
 isPause = False
 LINEWIDTH = 1  # 线宽
 FPS = 30  # 帧率
-SPEED = 5  # 蛇的移动速度，小于FPS为好
+SPEED = 8  # 蛇的移动速度，小于FPS为好
 TMPFRAME = 1  # 帧数计数器
 SCORE = 0  # 得分
 SCORE_MAX = 0  # 历史最高得分
@@ -42,6 +42,16 @@ BLOCK1 = [(3, 9), (4, 9), (5, 9), (6, 9)]
 POSITION = [(1, 3), (1, 4), (1, 5)]  # 蛇的身体坐标，列表中嵌套列表
 DIRECTION = (1, 0)  # 方向，x方向变化量、y方向变化量
 isMove = False
+
+ABOUT = [
+    'Control: Use W/S/A/D or up/down/left/right',
+    'Pause or Begin again: Space',
+    'Quit: Esc',
+    '',  # new line
+    'Author: @Kearney',
+    'Email: 191615342@qq.com',
+    'web: https://gitee.com/back-toy/snake'
+]
 
 
 def drawgrid(SIZE, WIDTH, HEIGHT):
@@ -192,7 +202,14 @@ def start_the_game():
 
 
 def set_difficulty(value, difficulty):
-    pass
+    print(difficulty)
+    global SPEED
+    if difficulty == 1:
+        SPEED = 8
+    elif difficulty == 2:
+        SPEED = 6
+    elif difficulty == 3:
+        SPEED = 4
 
 
 if os.path.exists(FILE_SCORE):
@@ -222,14 +239,24 @@ try:  # 初始化音频模块并载入音频文件
 except Exception:
     print("温馨提示：请正确配置音频文件", Exception)
 
+about_menu = pygame_menu.Menu(height=HEIGHT,
+                              width=WIDTH,
+                              onclose=pygame_menu.events.DISABLE_CLOSE,
+                              theme=pygame_menu.themes.THEME_SOLARIZED,
+                              title='About')
+for m in ABOUT:
+    about_menu.add_label(m, align=pygame_menu.locals.ALIGN_LEFT, font_size=20)
+about_menu.add_label('')
+about_menu.add_button('Return to menu', pygame_menu.events.BACK)
+
 menu = pygame_menu.Menu(HEIGHT,
                         WIDTH,
                         'Welcome to Snake',
                         theme=pygame_menu.themes.THEME_SOLARIZED)
-
-menu.add_text_input('Name :', default='Kearney')
-menu.add_selector('Difficulty :', [('Hard', 1), ('Easy', 2)],
-                  onchange=set_difficulty)
 menu.add_button('Play', start_the_game)
+menu.add_selector('Difficulty :', [('Easy', 1), ('Little Hard', 2),
+                                   ('Hard', 3)],
+                  onchange=set_difficulty)
+menu.add_button('About', about_menu)
 menu.add_button('Quit', pygame_menu.events.EXIT)
 menu.mainloop(screen)
