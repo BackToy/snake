@@ -1,6 +1,21 @@
 # snake
 ## 简介
 贪吃蛇，基于python3-pygame
+### 开发环境
+- win 10 amd64
+- Visual Studio Code 1.51.0
+- python 3.9.0 x64
+- pygame 2.0.1
+- pygame-menu 3.4.4
+### 使用说明
+如果Release有程序包直接下载即可，在其它地方下载的与我无瓜。  
+自行编译的话可以参考下面的代码
+```bash
+pip install pygame pygame-menu
+git clone git@gitee.com:back-toy/snake.git
+cd snake
+python main.py
+```
 ## 程序结构
 ### 蛇
 最基本的可以用数组，看到有用队列的，当然也可以使用链表。（Python没有指针、数组类型）
@@ -52,8 +67,10 @@ GPL 3.0
 用(x,y)做方向编码易于计算下一个坐标
 Simhei字体不是每个OS都有、少量flake8
 - [Python中list的复制及深拷贝与浅拷贝探究](https://www.cnblogs.com/Black-rainbow/p/9577029.html)
-
+- [pygame_menu]()
 ## ChangeLog
+- 2021/1/14  
+添加简易开始菜单  
 - 2021/1/2  
 用in优化咬舌自尽try代码  
 方向编码由一位变为两位；fix添加蛇身逻辑：之前在吃到目标时是无法在目标位置拐弯的    
