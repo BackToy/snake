@@ -68,4 +68,4 @@ GPL 3.0
 Simhei字体不是每个OS都有、少量flake8
 - [Python中list的复制及深拷贝与浅拷贝探究](https://www.cnblogs.com/Black-rainbow/p/9577029.html)
 - [pygame_menu](https://pygame-menu.readthedocs.io)
-
+- [pygame_menu/Menu Quit Error : SystemExit on VS Code #251](https://github.com/ppizarror/pygame-menu/issues/251)

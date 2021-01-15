@@ -258,5 +258,5 @@ menu.add_selector('Difficulty :', [('Easy', 1), ('Little Hard', 2),
                                    ('Hard', 3)],
                   onchange=set_difficulty)
 menu.add_button('About', about_menu)
-menu.add_button('Quit', pygame_menu.events.EXIT)
+menu.add_button('Quit', terminate)  # 已发起issue，已经fix，估计在下一个版本发布
 menu.mainloop(screen)
