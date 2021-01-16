@@ -202,7 +202,6 @@ def start_the_game():
 
 
 def set_difficulty(value, difficulty):
-    print(difficulty)
     global SPEED
     if difficulty == 1:
         SPEED = 8
@@ -220,8 +219,16 @@ if os.path.exists(FILE_SCORE):
             print("Warning： ", m, "， 历史的得分不存在")
             SCORE_MAX = 0
 else:
-    os.mknod(FILE_SCORE)
-
+    try:
+        os.mknod(FILE_SCORE)  # linux 有效，win无效
+    except Exception as m:
+        print('第一次尝试创建得分文件失败，错误提示： ', m)
+        try:
+            with open(FILE_SCORE, "w") as f:
+                pass
+            # print('第二次尝试创建得分文件成功')
+        except Exception as m:
+            print('第二次尝试创建得分文件失败，错误提示： ', m)
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
