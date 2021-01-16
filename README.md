@@ -6,7 +6,7 @@
 - Visual Studio Code 1.51.0
 - python 3.9.0 x64
 - pygame 2.0.1
-- pygame-menu 3.4.4
+- pygame-menu 3.5.1
 ### 使用说明
 如果Release有程序包直接下载即可，在其它地方下载的与我无瓜。  
 自行编译的话可以参考下面的代码
@@ -35,25 +35,7 @@ python main.py
 - SPEED：表示速度快慢的量，越小越快
 - SIZE：一个格子的宽度，是宽高的公约数时会美观一点，显示器像素越多时建议往大调，不然太小了
 
-## 值得记录的问题
-### flake8 E722 && F841
-```python
-try:
-    tmp = copy.deepcopy(POSITION)
-    tmpHead = tmp.pop()  # 蛇头
-    tmp.index(tmpHead)  # 蛇头在蛇身里返回下标，不在则抛出异常
-    isFail = True  # 咬到自己啦，结束
-except Exception as e:
-    print("你没咬到自己，加油。这是个为了消除flake8(F841)警告的无用提示： ", e)
-    pass  # 没咬到自己
-```
-在上面的代码中，我需要这个异常，但是我不用e的话，flake8会产生F841警告，还没想到除了使用这个变量e之外怎么消除这个警告。（直接except的会产生另外一个警告-.-）
 
-这样使用两个warning都不会有:  
-```python
-except Exception:  
-    pass
-```
 ## License
 GPL 3.0
 ## References
@@ -69,3 +51,4 @@ Simhei字体不是每个OS都有、少量flake8
 - [Python中list的复制及深拷贝与浅拷贝探究](https://www.cnblogs.com/Black-rainbow/p/9577029.html)
 - [pygame_menu](https://pygame-menu.readthedocs.io)
 - [pygame_menu/Menu Quit Error : SystemExit on VS Code #251](https://github.com/ppizarror/pygame-menu/issues/251)
+- [Python游戏工具包---Pygame最常用的15个模块详解（附pdf版本）](https://cloud.tencent.com/developer/article/1661777)
