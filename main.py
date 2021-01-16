@@ -11,7 +11,7 @@
 '''
 import pygame
 from pygame.locals import K_SPACE, K_UP, K_w, K_DOWN, K_s,\
-    K_LEFT, K_a, K_RIGHT, K_d, K_ESCAPE, KEYUP
+    K_LEFT, K_a, K_RIGHT, K_d, K_ESCAPE
 import random
 import os
 import pygame_menu
@@ -115,7 +115,8 @@ def draw():
 
 
 def start_the_game():
-    global isPause, isFail, TMPFRAME, SCORE, SCORE_MAX, POSITION, DIRECTION, TARGET
+    global isPause, isFail, TMPFRAME, SCORE, SCORE_MAX, POSITION, DIRECTION,\
+        TARGET, isMove
     while True:
         for event in pygame.event.get():  # 获取键盘输入
             if event.type == pygame.QUIT:  # 右上角x 退出程序
@@ -243,8 +244,8 @@ try:  # 初始化音频模块并载入音频文件
     MHIT = pygame.mixer.Sound(MHIT)
     MCRASH = pygame.mixer.Sound(MCRASH)
     isMload = True
-except Exception:
-    print("温馨提示：请正确配置音频文件", Exception)
+except Exception as m:
+    print("温馨提示：请正确配置音频文件，异常提示： ", m)
 
 about_menu = pygame_menu.Menu(height=HEIGHT,
                               width=WIDTH,
