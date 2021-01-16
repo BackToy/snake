@@ -94,7 +94,7 @@ def set_difficulty(value, diff):
         BLOCK1 = [(3, 9), (4, 9), (5, 9), (6, 9)]
 
 
-def drawgrid(SIZE, XSTART, XEND, YSTART, YEND, showAll=True, LINEWIDTH=1):
+def drawgrid(SIZE, XSTART, XEND, YSTART, YEND, LINEWIDTH=1):
     """绘制网格
     参数
     ----------
@@ -103,23 +103,14 @@ def drawgrid(SIZE, XSTART, XEND, YSTART, YEND, showAll=True, LINEWIDTH=1):
     XEND：右边线
     YSTART：上边线
     YEND：下边线
-    showAll：是否绘制全部方格，默认是，否就只绘制边框
     LINEWIDTH：线宽，默认为1
     """
-    if showAll:
-        for x in range(XSTART, XEND + 1, SIZE):
-            pygame.draw.line(screen, CLINE, (x, YSTART), (x, YEND), LINEWIDTH)
-        for y in range(YSTART, YEND + 1, SIZE):
-            pygame.draw.line(screen, CLINE, (XSTART, y), (XEND, y), LINEWIDTH)
-    else:  # 只绘制边框
-        pygame.draw.line(screen, CLINE, (XSTART, YSTART), (XSTART, YEND),
-                         LINEWIDTH)
-        pygame.draw.line(screen, CLINE, (XSTART, YEND), (XEND, YEND),
-                         LINEWIDTH)
-        pygame.draw.line(screen, CLINE, (XSTART, YSTART), (XEND, YSTART),
-                         LINEWIDTH)
-        pygame.draw.line(screen, CLINE, (XEND, YSTART), (XEND, YEND),
-                         LINEWIDTH)
+    pygame.draw.line(screen, CLINE, (XSTART, YSTART), (XSTART, YEND),
+                     LINEWIDTH)
+    pygame.draw.line(screen, CLINE, (XSTART, YEND), (XEND, YEND), LINEWIDTH)
+    pygame.draw.line(screen, CLINE, (XSTART, YSTART), (XEND, YSTART),
+                     LINEWIDTH)
+    pygame.draw.line(screen, CLINE, (XEND, YSTART), (XEND, YEND), LINEWIDTH)
 
 
 def savedata(filepath, data):
