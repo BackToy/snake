@@ -4,7 +4,7 @@
 @File    :  main.py
 @Time    :  2020/12/28 15:38:03
 @Author  :  Kearney
-@Version :  0.0.0
+@Version :  0.0.1
 @Contact :  191615342@qq.com
 @License :  GPL 3.0
 @Desc    :  贪吃蛇，基于python3-pygame
@@ -35,7 +35,7 @@ CLINE = (255, 255, 255)  # 线条颜色
 CSNAKE = (0, 245, 0)  # 蛇的颜色
 CTARGET = (255, 0, 0)  # 目标颜色
 CBLOCK = (50, 40, 60)  # 障碍物颜色
-BLOCK1 = [(3, 9), (4, 9), (5, 9), (6, 9)]
+BLOCK1 = []
 isMove = False
 
 ABOUT = [
@@ -72,6 +72,26 @@ def init():
         TARGET = (int(random.randint(XSTART, XEND) / SIZE),
                   int(random.randint(YSTART, YEND) / SIZE))
     isFail = False
+
+
+def set_speed(value, speed):
+    """设置蛇的速度"""
+    global SPEED
+    if speed == 1:
+        SPEED = 8
+    elif speed == 2:
+        SPEED = 6
+    elif speed == 3:
+        SPEED = 4
+
+
+def set_difficulty(value, diff):
+    """设置难度"""
+    global BLOCK1
+    if diff == 1:
+        BLOCK1 = []
+    elif diff == 2:
+        BLOCK1 = [(3, 9), (4, 9), (5, 9), (6, 9)]
 
 
 def drawgrid(SIZE, XSTART, XEND, YSTART, YEND, showAll=True, LINEWIDTH=1):
@@ -228,16 +248,6 @@ def start_the_game():
         pygame.display.update()  # 更新画面
 
 
-def set_difficulty(value, difficulty):
-    global SPEED
-    if difficulty == 1:
-        SPEED = 8
-    elif difficulty == 2:
-        SPEED = 6
-    elif difficulty == 3:
-        SPEED = 4
-
-
 if os.path.exists(FILE_SCORE):
     with open(FILE_SCORE, "r") as f:
         try:
@@ -289,7 +299,10 @@ menu = pygame_menu.Menu(HEIGHT,
                         'Welcome to Snake',
                         theme=pygame_menu.themes.THEME_SOLARIZED)
 menu.add_button('Play', start_the_game)
-menu.add_selector('Difficulty :', [('Little Hard', 2), ('Easy', 1),
+
+menu.add_selector('Speed :', [('Middle', 2), ('Slow', 1), ('Fast', 3)],
+                  onchange=set_speed)
+menu.add_selector('Difficulty :', [('Easy', 1), ('Little Hard', 2),
                                    ('Hard', 3)],
                   onchange=set_difficulty)
 menu.add_button('About', about_menu)
