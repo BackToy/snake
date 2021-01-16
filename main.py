@@ -19,9 +19,6 @@ import pygame_menu
 WIDTH = 960  # 窗体宽度
 HEIGHT = 640  # 窗体高度
 SIZE = 40  # 方格大小
-NUMX = int(WIDTH / SIZE) - 1  # x、y轴方格子数-1
-NUMY = int(HEIGHT / SIZE) - 1
-TARGET = (random.randint(0, NUMX), random.randint(0, NUMY))  # 目标坐标
 isEat = True  # 第一次生成目标也进行蛇身检测
 isFail = False
 isPause = False
@@ -39,8 +36,6 @@ CSNAKE = (0, 245, 0)  # 蛇的颜色
 CTARGET = (255, 0, 0)  # 目标颜色
 CBLOCK = (50, 40, 60)  # 障碍物颜色
 BLOCK1 = [(3, 9), (4, 9), (5, 9), (6, 9)]
-POSITION = [(1, 3), (1, 4), (1, 5)]  # 蛇的身体坐标，列表中嵌套列表
-DIRECTION = (1, 0)  # 方向，x方向变化量、y方向变化量
 isMove = False
 
 ABOUT = [
@@ -52,20 +47,59 @@ ABOUT = [
     'Email: 191615342@qq.com',
     'web: https://gitee.com/back-toy/snake'
 ]
+NSIZEUP = 2  # 上方空闲区域占用的格子数 >=0
+NSIZEEL = 1  # 左右和下方空闲区域占用的格子数 >=0
+
+XSTART = SIZE * NSIZEEL
+XEND = WIDTH - SIZE * NSIZEEL
+YSTART = SIZE * NSIZEUP
+YEND = HEIGHT - SIZE * NSIZEEL
+
+NUMX = int(WIDTH / SIZE) - NSIZEEL * 2  # 存活区域的格子数
+NUMY = int(HEIGHT / SIZE) - NSIZEUP
 
 
-def drawgrid(SIZE, WIDTH, HEIGHT):
+def init():
+    global POSITION, DIRECTION, SCORE, TARGET, isFail
+    POSITION = [(NSIZEEL + 1, NSIZEUP + 3), (NSIZEEL + 1, NSIZEUP + 4),
+                (NSIZEEL + 1, NSIZEUP + 5)]  # 蛇的身体坐标
+    DIRECTION = (1, 0)  # 方向，x方向变化量、y方向变化量
+    SCORE = 0
+    # 目标坐标
+    TARGET = (int(random.randint(XSTART, XEND) / SIZE),
+              int(random.randint(YSTART, YEND) / SIZE))
+    while TARGET in POSITION or TARGET in BLOCK1:
+        TARGET = (int(random.randint(XSTART, XEND) / SIZE),
+                  int(random.randint(YSTART, YEND) / SIZE))
+    isFail = False
+
+
+def drawgrid(SIZE, XSTART, XEND, YSTART, YEND, showAll=True, LINEWIDTH=1):
     """绘制网格
     参数
     ----------
-    SIZE: 起点和步长
-    WIDTH: 区域宽度
-    HEIGHT: 区域高度
+    SIZE: 格子边长
+    XSTART：左边线
+    XEND：右边线
+    YSTART：上边线
+    YEND：下边线
+    showAll：是否绘制全部方格，默认是，否就只绘制边框
+    LINEWIDTH：线宽，默认为1
     """
-    for x in range(SIZE, WIDTH, SIZE):
-        pygame.draw.line(screen, CLINE, (x, 0), (x, HEIGHT), LINEWIDTH)
-    for y in range(SIZE, HEIGHT, SIZE):
-        pygame.draw.line(screen, CLINE, (0, y), (WIDTH, y), LINEWIDTH)
+    if showAll:
+        for x in range(XSTART, XEND + 1, SIZE):
+            pygame.draw.line(screen, CLINE, (x, YSTART), (x, YEND), LINEWIDTH)
+        for y in range(YSTART, YEND + 1, SIZE):
+            pygame.draw.line(screen, CLINE, (XSTART, y), (XEND, y), LINEWIDTH)
+    else:  # 只绘制边框
+        pygame.draw.line(screen, CLINE, (XSTART, YSTART), (XSTART, YEND),
+                         LINEWIDTH)
+        pygame.draw.line(screen, CLINE, (XSTART, YEND), (XEND, YEND),
+                         LINEWIDTH)
+        pygame.draw.line(screen, CLINE, (XSTART, YSTART), (XEND, YSTART),
+                         LINEWIDTH)
+        pygame.draw.line(screen, CLINE, (XEND, YSTART), (XEND, YEND),
+                         LINEWIDTH)
 
 
 def savedata(filepath, data):
@@ -92,7 +126,7 @@ def terminate():
 
 
 def drawblock(screen, block, size, color):
-    """绘制障碍物"""
+    """绘制方块"""
     for i in range(len(block)):
         pygame.draw.rect(
             screen, color,
@@ -102,19 +136,17 @@ def drawblock(screen, block, size, color):
 def draw():
     """绘制网格、障碍物、蛇、目标"""
     screen.fill(CBACK)  # 清空画面为背景色
-    drawgrid(SIZE, WIDTH, HEIGHT)  # 绘制网格
+    drawgrid(SIZE, XSTART, XEND, YSTART, YEND)  # 绘制网格
     drawblock(screen, BLOCK1, SIZE, CBLOCK)  # 绘制障碍物
-    for i in range(len(POSITION)):  # 绘制蛇
-        pygame.draw.rect(screen, CSNAKE,
-                         (POSITION[i][0] * SIZE + 1, POSITION[i][1] * SIZE + 1,
-                          SIZE - 1, SIZE - 1), 0)
-    # # 绘制目标
+    drawblock(screen, POSITION, SIZE, CSNAKE)  # 绘制蛇
+    # 绘制目标
     pygame.draw.rect(
         screen, CTARGET,
         (TARGET[0] * SIZE + 1, TARGET[1] * SIZE + 1, SIZE - 1, SIZE - 1), 0)
 
 
 def start_the_game():
+    init()
     global isPause, isFail, TMPFRAME, SCORE, SCORE_MAX, POSITION, DIRECTION,\
         TARGET, isMove
     while True:
@@ -125,13 +157,7 @@ def start_the_game():
                 if event.key == K_SPACE:  # 暂停/重新开始
                     isPause = not isPause  # 暂停
                     if isFail:  # 失败了重新开始
-                        POSITION = [(1, 3), (1, 4), (1, 5)]
-                        DIRECTION = (1, 0)
-                        SCORE = 0
-                        while TARGET in POSITION or TARGET in BLOCK1:
-                            TARGET = (random.randint(0, NUMX),
-                                      random.randint(0, NUMY))
-                        isFail = False
+                        init()
                 elif event.key == K_ESCAPE:  # 键盘左上角Esc 退出程序
                     terminate()
                 elif event.key in (K_UP,
@@ -158,8 +184,8 @@ def start_the_game():
                            POSITION[POSHEAD][1] + DIRECTION[1])  # 蛇头的下一个位置
                 POSITION.append(nextPos)  # 添加移动后的新蛇头
                 # 边界检测
-                if nextPos[0] < 0 or nextPos[0] > NUMX or nextPos[
-                        1] < 0 or nextPos[1] > NUMY:
+                if nextPos[0] < NSIZEEL or nextPos[0] > NUMX or nextPos[
+                        1] < NSIZEUP or nextPos[1] > NUMY:
                     isFail = True
                     isPause = True
                     MCRASH.play()
@@ -171,8 +197,8 @@ def start_the_game():
                 # 目标碰撞检测
                 if nextPos == TARGET:
                     while TARGET in POSITION or TARGET in BLOCK1:  # 生成新目标
-                        TARGET = (random.randint(0, NUMX),
-                                  random.randint(0, NUMY))
+                        TARGET = (int(random.randint(XSTART, XEND) / SIZE),
+                                  int(random.randint(YSTART, YEND) / SIZE))
                     SCORE += 1  # 分数加一
                     MHIT.play()
                     if SCORE > SCORE_MAX:
@@ -247,6 +273,7 @@ try:  # 初始化音频模块并载入音频文件
 except Exception as m:
     print("温馨提示：请正确配置音频文件，异常提示： ", m)
 
+# start_the_game()
 about_menu = pygame_menu.Menu(height=HEIGHT,
                               width=WIDTH,
                               onclose=pygame_menu.events.DISABLE_CLOSE,
@@ -262,7 +289,7 @@ menu = pygame_menu.Menu(HEIGHT,
                         'Welcome to Snake',
                         theme=pygame_menu.themes.THEME_SOLARIZED)
 menu.add_button('Play', start_the_game)
-menu.add_selector('Difficulty :', [('Easy', 1), ('Little Hard', 2),
+menu.add_selector('Difficulty :', [('Little Hard', 2), ('Easy', 1),
                                    ('Hard', 3)],
                   onchange=set_difficulty)
 menu.add_button('About', about_menu)
