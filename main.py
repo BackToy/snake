@@ -262,7 +262,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 font = pygame.font.Font(None, 30)  # 得分字体，内置，不支持中文
 fontBig = pygame.font.Font(None, 70)
-
+pygame.display.set_caption("贪吃蛇")  # 窗口标题
+ico = pygame.image.load("./src/img/snake.ico")
+pygame.display.set_icon(ico)  # 图标
 MCRASH = "./src/sound/crash.ogg"  # 音频
 MHIT = "./src/sound/gobble.ogg"  # 游戏失败音频
 
