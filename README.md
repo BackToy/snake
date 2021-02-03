@@ -2,19 +2,17 @@
 ## 简介
 贪吃蛇，基于python3-pygame，源代码开放在[Gitte仓库](https://gitee.com/back-toy/snake)
 ### 开发环境
-- win 10 amd64
 - Visual Studio Code 1.51.0
-- python 3.9.0 x64
-- pygame 2.0.1
-- pygame-menu 3.5.1
+- python 3.x x64
 ### 使用说明
 如果Release有程序包直接下载即可，在其它地方下载的与我无瓜。  
 自行编译的话可以参考下面的代码
 ```bash
-pip install pygame pygame-menu
 git clone git@gitee.com:back-toy/snake.git
 cd snake
-python main.py
+pipenv install
+pipenv shell
+pipenv run python main.py
 ```
 ## 程序结构
 ### 蛇
